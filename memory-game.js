@@ -13,7 +13,6 @@ console.log(colors, 'after shuffled');
 createCards(colors);
 
 let cardsFlipped = 0;
-let testForMatchArray = []
 
 /** Shuffle array items in-place and return shuffled array. */
 
@@ -64,22 +63,42 @@ function flipCard(card) {
   // console.log(card.classList);
   card.style.backgroundColor = card.classList[0];
   card.classList.add("currentTrial");
-  testForMatchArray = document.querySelectorAll('.currentTrial');
+  let testForMatchArray = document.querySelectorAll('.currentTrial');
   console.log("test for match array", testForMatchArray)
   // console.log("test for string of color", testForMatchArray[0].classList[0])
   if (testForMatchArray.length === 2) {
+    console.log(testForMatchArray[0].classList[0],testForMatchArray[1].classList[0])
     if (testForMatchArray[0].classList[0] !== testForMatchArray[1].classList[0]) {
-        // unFlipCard(testForMatchArray[0])
-        // unFlipCard(testForMatchArray[1])
+      //ASK ABOUT SETTIMEOUT SETUP
+        setTimeout(function() {
+          unFlipCard(testForMatchArray[0])
+        }, FOUND_MATCH_WAIT_MSECS);
+        setTimeout(function() {
+          unFlipCard(testForMatchArray[1])
+          cardsFlipped = 0;
+          console.log(cardsFlipped, 'cardsFlippedSet Timeout');
+        }, FOUND_MATCH_WAIT_MSECS);
+    }
+    else {
+      testForMatchArray[0].classList.remove('currentTrial');
+      testForMatchArray[1].classList.remove('currentTrial');
+      cardsFlipped = 0;
+      console.log(cardsFlipped, 'cardsFlipped for a match');
     }
   }
+  // cardsFlipped = 0;
 }
 
 /** Flip a card face-down. */
 
 function unFlipCard(card) {
+  //remove currentTrail class
+  //remove backgroundColor style
   // ... you need to write this ...
-  cardsFlipped = 0;
+  console.log('unflip card called');
+  card.classList.remove('currentTrial');
+  console.log(card.classList);
+  card.style.backgroundColor = 'initial';
 }
 
 /** Handle clicking on a card: this could be first-card or second-card. */
@@ -87,10 +106,12 @@ function unFlipCard(card) {
 function handleCardClick(evt) {
   // ... you need to write this ...
   // console.log(evt.target);
-  // console.log('clicked');
+  console.log('clicked');
   
-  if (cardsFlipped < 2) {
+  cardsFlipped++;
+  if (cardsFlipped < 3) {
     flipCard(evt.target)
-    cardsFlipped++;
+    console.log(cardsFlipped, 'cardsFlipped in if statement');
+
   }
 }
