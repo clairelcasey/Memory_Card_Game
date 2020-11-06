@@ -50,6 +50,7 @@ function createCards(colors) {
 
     gameBoard.appendChild(colorElem);
 
+    // ***** could this be an instance to use target and only have one eventlistener for all tiles? ******
     colorElem.addEventListener('click', function(evt) {
       handleCardClick(evt);
     });
@@ -59,59 +60,63 @@ function createCards(colors) {
 /** Flip a card face-up. */
 
 function flipCard(card) {
-  // ... you need to write this ...
   // console.log(card.classList);
+  // set card background to color picked by generator
   card.style.backgroundColor = card.classList[0];
+  // add flipped cards to trial class
   card.classList.add("currentTrial");
+  // create array to store two cards at a time for comparison
   let testForMatchArray = document.querySelectorAll('.currentTrial');
-  console.log("test for match array", testForMatchArray)
+  // console.log("test for match array", testForMatchArray)
   // console.log("test for string of color", testForMatchArray[0].classList[0])
   if (testForMatchArray.length === 2) {
-    console.log(testForMatchArray[0].classList[0],testForMatchArray[1].classList[0])
+    // console.log(testForMatchArray[0].classList[0],testForMatchArray[1].classList[0])
     if (testForMatchArray[0].classList[0] !== testForMatchArray[1].classList[0]) {
-      //ASK ABOUT SETTIMEOUT SETUP
+      //****** ASK ABOUT SETTIMEOUT SETUP *******
+      // when cards in array don't match, call unflip at determined timeout
+      // reset cardsFlipped
         setTimeout(function() {
           unFlipCard(testForMatchArray[0])
         }, FOUND_MATCH_WAIT_MSECS);
         setTimeout(function() {
           unFlipCard(testForMatchArray[1])
           cardsFlipped = 0;
-          console.log(cardsFlipped, 'cardsFlippedSet Timeout');
+          // console.log(cardsFlipped, 'cardsFlippedSet Timeout');
         }, FOUND_MATCH_WAIT_MSECS);
     }
+    // if cards do match remove them from trial class to free up space for next cards
+    // reset cardsFlipped
     else {
       testForMatchArray[0].classList.remove('currentTrial');
       testForMatchArray[1].classList.remove('currentTrial');
       cardsFlipped = 0;
-      console.log(cardsFlipped, 'cardsFlipped for a match');
+      // console.log(cardsFlipped, 'cardsFlipped for a match');
     }
   }
-  // cardsFlipped = 0;
 }
 
 /** Flip a card face-down. */
 
 function unFlipCard(card) {
+  // console.log('unflip card called');
   //remove currentTrail class
-  //remove backgroundColor style
-  // ... you need to write this ...
-  console.log('unflip card called');
+  // ******* would this be better placed somewhere else (ie. line 73) ****** 
   card.classList.remove('currentTrial');
-  console.log(card.classList);
+  // console.log(card.classList);
+  //remove backgroundColor style
   card.style.backgroundColor = 'initial';
 }
 
 /** Handle clicking on a card: this could be first-card or second-card. */
 
 function handleCardClick(evt) {
-  // ... you need to write this ...
   // console.log(evt.target);
-  console.log('clicked');
-  
-  cardsFlipped++;
-  if (cardsFlipped < 3) {
-    flipCard(evt.target)
-    console.log(cardsFlipped, 'cardsFlipped in if statement');
-
+  if (!evt.target.classList.contains('currentTrial')) {
+    // console.log('clicked');
+    cardsFlipped++;
+    if (cardsFlipped < 3) {
+      flipCard(evt.target)
+      // console.log(cardsFlipped, 'cardsFlipped in if statement');
+    }
   }
 }
