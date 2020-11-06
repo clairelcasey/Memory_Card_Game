@@ -12,6 +12,8 @@ const colors = shuffle(COLORS);
 console.log(colors, 'after shuffled');
 createCards(colors);
 
+let cardsFlipped = 0;
+let testForMatchArray = []
 
 /** Shuffle array items in-place and return shuffled array. */
 
@@ -59,21 +61,36 @@ function createCards(colors) {
 
 function flipCard(card) {
   // ... you need to write this ...
-  console.log(card.classList);
+  // console.log(card.classList);
   card.style.backgroundColor = card.classList[0];
+  card.classList.add("currentTrial");
+  testForMatchArray = document.querySelectorAll('.currentTrial');
+  console.log("test for match array", testForMatchArray)
+  // console.log("test for string of color", testForMatchArray[0].classList[0])
+  if (testForMatchArray.length === 2) {
+    if (testForMatchArray[0].classList[0] !== testForMatchArray[1].classList[0]) {
+        // unFlipCard(testForMatchArray[0])
+        // unFlipCard(testForMatchArray[1])
+    }
+  }
 }
 
 /** Flip a card face-down. */
 
 function unFlipCard(card) {
   // ... you need to write this ...
+  cardsFlipped = 0;
 }
 
 /** Handle clicking on a card: this could be first-card or second-card. */
 
 function handleCardClick(evt) {
   // ... you need to write this ...
-  console.log(evt.target);
-  console.log('clicked');
-  flipCard(evt.target)
+  // console.log(evt.target);
+  // console.log('clicked');
+  
+  if (cardsFlipped < 2) {
+    flipCard(evt.target)
+    cardsFlipped++;
+  }
 }
