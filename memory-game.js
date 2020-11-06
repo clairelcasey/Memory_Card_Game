@@ -71,18 +71,16 @@ function flipCard(card) {
   // console.log("test for string of color", testForMatchArray[0].classList[0])
   if (testForMatchArray.length === 2) {
     // console.log(testForMatchArray[0].classList[0],testForMatchArray[1].classList[0])
-    if (testForMatchArray[0].classList[0] !== testForMatchArray[1].classList[0]) {
+    if (testForMatchArray[0].classList[0] !== testForMatchArray[1].classList[0]) { // classList.contains('currentTrial')
       //****** ASK ABOUT SETTIMEOUT SETUP *******
       // when cards in array don't match, call unflip at determined timeout
       // reset cardsFlipped
         setTimeout(function() {
           unFlipCard(testForMatchArray[0])
-        }, FOUND_MATCH_WAIT_MSECS);
-        setTimeout(function() {
           unFlipCard(testForMatchArray[1])
           cardsFlipped = 0;
-          // console.log(cardsFlipped, 'cardsFlippedSet Timeout');
         }, FOUND_MATCH_WAIT_MSECS);
+          // console.log(cardsFlipped, 'cardsFlippedSet Timeout');
     }
     // if cards do match remove them from trial class to free up space for next cards
     // reset cardsFlipped
