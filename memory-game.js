@@ -13,6 +13,9 @@ console.log(colors, 'after shuffled');
 createCards(colors);
 
 let cardsFlipped = 0;
+let card1 = null;
+let card2 = null; 
+let waiting = false;
 
 /** Shuffle array items in-place and return shuffled array. */
 
@@ -48,12 +51,10 @@ function createCards(colors) {
     const colorElem = document.createElement('div');
     colorElem.classList.add(color);
 
+    colorElem.addEventListener('click', handleCardClick);
     gameBoard.appendChild(colorElem);
 
     // ***** could this be an instance to use target and only have one eventlistener for all tiles? ******
-    colorElem.addEventListener('click', function(evt) {
-      handleCardClick(evt);
-    });
   }
 }
 
@@ -64,33 +65,8 @@ function flipCard(card) {
   // set card background to color picked by generator
   card.style.backgroundColor = card.classList[0];
   // add flipped cards to trial class
-  card.classList.add("currentTrial");
-  // create array to store two cards at a time for comparison
-  let testForMatchArray = document.querySelectorAll('.currentTrial');
-  // console.log("test for match array", testForMatchArray)
-  // console.log("test for string of color", testForMatchArray[0].classList[0])
-  if (testForMatchArray.length === 2) {
-    // console.log(testForMatchArray[0].classList[0],testForMatchArray[1].classList[0])
-    if (testForMatchArray[0].classList[0] !== testForMatchArray[1].classList[0]) { // classList.contains('currentTrial')
-      //****** ASK ABOUT SETTIMEOUT SETUP *******
-      // when cards in array don't match, call unflip at determined timeout
-      // reset cardsFlipped
-        setTimeout(function() {
-          unFlipCard(testForMatchArray[0])
-          unFlipCard(testForMatchArray[1])
-          cardsFlipped = 0;
-        }, FOUND_MATCH_WAIT_MSECS);
-          // console.log(cardsFlipped, 'cardsFlippedSet Timeout');
-    }
-    // if cards do match remove them from trial class to free up space for next cards
-    // reset cardsFlipped
-    else {
-      testForMatchArray[0].classList.remove('currentTrial');
-      testForMatchArray[1].classList.remove('currentTrial');
-      cardsFlipped = 0;
-      // console.log(cardsFlipped, 'cardsFlipped for a match');
-    }
-  }
+  card.classList.add("flipped");
+
 }
 
 /** Flip a card face-down. */
@@ -99,7 +75,7 @@ function unFlipCard(card) {
   // console.log('unflip card called');
   //remove currentTrail class
   // ******* would this be better placed somewhere else (ie. line 73) ****** 
-  card.classList.remove('currentTrial');
+  card.classList.remove('flipped');
   // console.log(card.classList);
   //remove backgroundColor style
   card.style.backgroundColor = 'initial';
@@ -109,12 +85,78 @@ function unFlipCard(card) {
 
 function handleCardClick(evt) {
   // console.log(evt.target);
-  if (!evt.target.classList.contains('currentTrial')) {
-    // console.log('clicked');
-    cardsFlipped++;
-    if (cardsFlipped < 3) {
-      flipCard(evt.target)
-      // console.log(cardsFlipped, 'cardsFlipped in if statement');
-    }
+  // if (waiting) return
+
+  if (card1 && card2) return
+
+  if (evt.target === card1 || evt.target === card2) return
+
+  if (!(card1)) {
+    card1 = evt.target;
+    console.log(evt.target, 'card1');
+    flipCard(card1);
+    return
   }
+
+  card2 = evt.target;
+  flipCard(card2);
+  console.log(evt.target, 'card2', card2.className);
+  
+  if (card1.className === card2.className) {
+    card1.removeEventListener('click', handleCardClick);
+    card2.removeEventListener('click', handleCardClick);
+    card1 = null;
+    card2 = null;
+  }
+
+  else {
+    // waiting = true;
+    setTimeout(function(){
+      unFlipCard(card1);
+      unFlipCard(card2);
+      card1 = null;
+      card2 = null;
+      // waiting = false;
+    }, FOUND_MATCH_WAIT_MSECS);
+    
+  }
+
+
+
+  // if (!evt.target.classList.contains('currentTrial')) {
+  //   // console.log('clicked');
+  //   cardsFlipped++;
+  //   if (cardsFlipped < 3) {
+  //     flipCard(evt.target)
+  //       // create array to store two cards at a time for comparison
+  //     let testForMatchArray = document.querySelectorAll('.currentTrial');
+  //     // console.log("test for match array", testForMatchArray)
+  //     // console.log("test for string of color", testForMatchArray[0].classList[0])
+  //     if (testForMatchArray.length === 2) {
+  //       // console.log(testForMatchArray[0].classList[0],testForMatchArray[1].classList[0])
+  //       if (testForMatchArray[0].classList[0] !== testForMatchArray[1].classList[0]) { // classList.contains('currentTrial')
+  //         //****** ASK ABOUT SETTIMEOUT SETUP *******
+  //         // when cards in array don't match, call unflip at determined timeout
+  //         // reset cardsFlipped
+  //           setTimeout(function() {
+  //             unFlipCard(testForMatchArray[0])
+  //             unFlipCard(testForMatchArray[1])
+  //             cardsFlipped = 0;
+  //           }, FOUND_MATCH_WAIT_MSECS);
+  //             // console.log(cardsFlipped, 'cardsFlippedSet Timeout');
+  //       }
+  //       // if cards do match remove them from trial class to free up space for next cards
+  //       // reset cardsFlipped
+  //       else {
+  //         testForMatchArray[0].classList.remove('currentTrial');
+  //         testForMatchArray[1].classList.remove('currentTrial');
+  //         cardsFlipped = 0;
+  //         // console.log(cardsFlipped, 'cardsFlipped for a match');
+  //       }
+  //     }
+
+
+  //     // console.log(cardsFlipped, 'cardsFlipped in if statement');
+  //   }
+  // }
 }
