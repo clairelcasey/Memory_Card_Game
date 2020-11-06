@@ -59,6 +59,8 @@ function createCards(colors) {
 
 function flipCard(card) {
   // ... you need to write this ...
+  console.log(card.classList);
+  card.style.backgroundColor = card.classList[0];
 }
 
 /** Flip a card face-down. */
@@ -71,5 +73,7 @@ function unFlipCard(card) {
 
 function handleCardClick(evt) {
   // ... you need to write this ...
+  console.log(evt.target);
   console.log('clicked');
+  flipCard(evt.target)
 }
