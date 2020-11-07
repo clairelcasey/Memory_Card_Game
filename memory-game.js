@@ -12,15 +12,40 @@ const colors = shuffle(COLORS);
 console.log(colors, 'after shuffled');
 const startButton = document.getElementById('startButton');
 startButton.addEventListener("click", function(evt) {
-  createCards(colors);
   startButton.style.display = "none";
+  createResetButton();
+  createCards(colors);
 });
+
+function createResetButton() {
+  const resetButton = document.getElementById('resetButton');
+  // const gameBoard = document.getElementById("game");
+
+  resetButton.style.display = 'unset';
+  resetButton.addEventListener('click', function(evt) {
+    // location.reload();
+    // document.getElementById('startButton').click();
+    removeCards();
+    // colors = shuffle(COLORS)
+    createCards(shuffle(COLORS));
+  });
+}
 
 let cardsFlipped = 0;
 let card1 = null;
 let card2 = null; 
 
 /** Shuffle array items in-place and return shuffled array. */
+
+function removeCards() {
+  // const gameBoardChildren = document.getElementById("game");
+  const gameBoardChildren = document.getElementById("game").children;
+  for (let i = 0; i < gameBoardChildren.length; i ++) {
+    gameBoardChildren[i].remove();
+    i--;
+  }
+
+}
 
 function shuffle(items) {
   // This algorithm does a "perfect shuffle", where there won't be any
